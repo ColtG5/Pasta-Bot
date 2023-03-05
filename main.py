@@ -11,6 +11,7 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!pasta ", intents=intents)
+bot.remove_command('help')
 
 @bot.event
 async def on_ready():
@@ -37,6 +38,24 @@ async def handle_user_request(message):
         function = getattr(TextResponses,i)
         if i.startswith('f_') and callable(function):
             await function(bot, message, channel, user_request)
+
+@bot.command(name="help")
+async def bot_commands(ctx):
+    bot_functions = []
+    import TextResponses
+    for i in dir(TextResponses):
+        function = getattr(TextResponses,i)
+        if i.startswith('f_') and callable(function):
+            bot_functions.append(i[2:])
+
+    bot_functions = [i.replace("_", " ") for i in bot_functions]
+    bot_functions[bot_functions.index("tts")] = "tts [message] (have to be in a vc)"
+
+    intro = "```Pasta Bot!\nUsage: !pasta <command> [arguments (for some)] | Current commands:\n"
+    funcs = "\n".join(bot_functions)
+    # wrap funcs with the string ``` to make it a code block
+    await ctx.send(intro + "\n" + funcs + "```")
+
 
 if __name__ == '__main__':
     bot.run(os.environ.get('TOKEN'))
