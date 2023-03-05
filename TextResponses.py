@@ -82,6 +82,8 @@ async def f_tts(bot, message, channel, req):
                 voice_client.stop()
     
             source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="tts-audio.mp3")
+            if voice_client is None or not voice_client.is_connected():
+                return
             voice_client.play(source)
         else:
             await channel.send("Join vc to use this command!")
