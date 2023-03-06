@@ -7,6 +7,12 @@ import random
 greetings = ["hi", "hey", "hello"]
 farewells = ["bye", "cya", "goodbye", "good bye"]
 tishie = ["tishie", "dumb cat", "burger material", "bathtub shitter"]
+misogyny = ["\"dishwasHER\" -ColtG5",
+             "\"I’m not a misogynist, I respect any woman who knows her place.\" -Stephen Braithwaite",
+             "\"The louder the woman, the more likely she is to be spiritually bereft, like an empty bowl which vibrates with a resonant echo. A full container makes no sound; she is packed too densely to ring.\" -Deborah Feldman",
+             "\"Women upset everything. When you let them into your life, you find that the woman is driving at one thing and you’re driving at another.\" -George Bernard Shaw",
+             "\"A proper wife should be as obedient as a slave . . . The female is a female by virtue of a certain lack of qualities . . . a natural defectiveness.\" -Aristotle",
+             "\"Women are only stronger when they arm themselves with their weaknesses.\" -Marquise Du Deffand"]
 
 async def f_pasta(bot, message, channel, req):
     if req == "pasta":
@@ -43,6 +49,10 @@ async def f_goodbye(bot, message, channel, req):
         else:
             await channel.send(f"Goodbye {user}.")
 
+async def f_thanks(bot, message, channel, req):
+    if req == "thanks":
+        await channel.send("np")
+
 async def f_fox(bot, message, channel, req):
     if req == "fox":
         response = requests.get("https://randomfox.ca/floof/?ref=apilist.fun")
@@ -55,38 +65,44 @@ async def f_wisdom(bot, message, channel, req):
         quote = "\"" + response[0]['q'] + "\"" + " -" + response[0]['a']
         await channel.send(quote)
 
-async def f_tts(bot, message, channel, req): 
+async def f_misogyny(bot, message, channel, req):
+    if req == "misogyny":
+        await channel.send(random.choice(misogyny))
+
+async def f_tts(bot, message, channel, req):
     if req.startswith("tts "):
         tts_text = req[4:]
         user = message.author
-        if user.voice != None:
+        if user.voice is not None:
             voice_channel = message.author.voice.channel
-            # print("Voice channel: " + str(voice_channel))
-            # print()
-            # print(bot.voice_clients)
-            # print()
             voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-            # print(voice_client)
-            if (voice_client != None) and (voice_client.channel != voice_channel):
+            if (voice_client is not None) and (voice_client.channel != voice_channel):
                 await voice_client.disconnect()
                 voice_client = None
-            if voice_client == None:
+            if voice_client is None:
                 voice_client = await voice_channel.connect()
 
-            # print(voice_client)
-            
             sound = gTTS(text=tts_text, lang="en", slow=False)
             sound.save("tts-audio.mp3")
-    
+
             if voice_client.is_playing():
                 voice_client.stop()
-    
+
             source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="tts-audio.mp3")
             if voice_client is None or not voice_client.is_connected():
                 return
-            voice_client.play(source)
+            try:
+                voice_client.play(source)
+            except Exception as e:
+                print(e)
+                return
         else:
             await channel.send("Join vc to use this command!")
+
+async def f_polar_bear(bot, message, channel, req):
+    if req == "polar bear":
+        from polar_bears import polar_bear_links
+        await channel.send("(Good choice)\n" + random.choice(polar_bear_links.polar_bear_links_list))
 
 async def f_red_panda(bot, message, channel, req):
     if req == "red panda":
@@ -176,5 +192,7 @@ async def f_cheat_code(bot, message, channel, req):
         # join objects into a string
         await message.channel.send("".join([arrow_up, arrow_up, arrow_down, arrow_down, arrow_left, arrow_right, arrow_left, arrow_right, b, a, start]))
 
-
+async def f_boobs(bot, message, channel, req):
+    if req == "boobs":
+        await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
         

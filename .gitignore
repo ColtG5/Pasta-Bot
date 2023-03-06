@@ -9,3 +9,4 @@ __pycache__/main.cpython-38.pyc
 __pycache__/PastaBotHelperFuncs.cpython-38.pyc
 __pycache__/TextResponses.cpython-38.pyc
 node_modules/.package-lock.json
+*.pyc
