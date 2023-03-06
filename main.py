@@ -21,6 +21,12 @@ async def on_ready():
     print("Logged in as {0.user}".format(bot))
     bot.loop.create_task(send_daily_polar_bear())
 
+    for guild in bot.guilds:
+        if guild.me.guild_permissions.view_audit_log:
+            print(f"{bot.user} has permission to view audit logs in {guild}")
+        else:
+            print(f"{bot.user} does not have permission to view audit logs in {guild}")
+
 @bot.event
 async def on_message(message):
     author = message.author
@@ -109,6 +115,22 @@ async def send_daily_polar_bear():
             # Wait until the send time
             wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
             await asyncio.sleep(wait_time)
+
+@bot.event
+async def on_voice_state_update(member, before, after):
+    if member.bot and after.channel is None:
+        async for entry in before.channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_disconnect):
+            print(entry)
+            if entry.target and entry.target.id == member.id:
+                print(f"The bot was disconnected from {before.channel.name} by {entry.user.name}")
+    elif after.channel is not None:
+        async for entry in after.channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_disconnect):
+            print(entry)
+            if entry.target and entry.target.id == member.id:
+                print(f"{member.name} was disconnected from {after.channel.name} by {entry.user.name}")
+
+
+
 
 
 if __name__ == '__main__':
