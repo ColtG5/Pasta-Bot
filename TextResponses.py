@@ -5,6 +5,8 @@ import discord
 from gtts import gTTS
 import random
 import yt_dlp
+import json
+import datetime
 
 greetings = ["hi", "hey", "hello"]
 farewells = ["bye", "cya", "goodbye", "good bye"]
@@ -18,12 +20,13 @@ misogyny = ["\"dishwasHER\" -ColtG5",
 
 async def f_pasta(bot, message, channel, req):
     if req == "pasta":
-        app_id = os.environ.get('APP_ID')
-        app_key = os.environ.get('APP_KEY')
+        app_id = os.environ.get('FOOD_APP_ID')
+        app_key = os.environ.get('FOOD_APP_KEY')
         query = "pasta"
-        url = f"https://api.edamam.com/search?q={query}&app_id={app_id}&app_key={app_key}"
+        url = "https://api.edamam.com/search?q=" + query + "&app_id=" + app_id + "&app_key=" + app_key
 
         response = requests.get(url)
+        print(response)
 
         if response.status_code == 200:
             data = response.json()
@@ -71,40 +74,78 @@ async def f_misogyny(bot, message, channel, req):
     if req == "misogyny":
         await channel.send(random.choice(misogyny))
 
+last_message_time = {}
+
 async def f_tts(bot, message, channel, req):
     if req.startswith("tts "):
         tts_text = req[4:]
         user = message.author
+        # print(user.name)
+        # print(user_emily_name)
         if user.voice is not None:
-            voice_channel = message.author.voice.channel
-            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-            if (voice_client is not None) and (voice_client.channel != voice_channel):
-                await voice_client.disconnect()
-                voice_client = None
-            if voice_client is None:
-                voice_client = await voice_channel.connect()
+            if user.name == user_emily_name:
+                # Check if the author has sent a message before
+                print(last_message_time)
+                if user.name in last_message_time:
+                    # Get the time of the last message sent by the author
+                    last_time = last_message_time[user.name]
+                    
+                    # Get the current time
+                    current_time = datetime.datetime.now()
+                    
+                    # Calculate the time elapsed since the last message
+                    time_elapsed = (current_time - last_time).total_seconds()
+                    
+                    # Do something with the time elapsed (e.g. print it)
+                    print(f"Time elapsed since last message: {time_elapsed} seconds")
 
-            sound = gTTS(text=tts_text, lang="en", slow=False)
-            sound.save("tts-audio.mp3")
-
-            if voice_client.is_playing():
-                voice_client.stop()
-
-            source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="tts-audio.mp3")
-            if voice_client is None or not voice_client.is_connected():
-                return
-            try:
-                voice_client.play(source)
-            except Exception as e:
-                print(e)
-                return
+                    wait_time = 60
+                    print(f"time elapsed: {time_elapsed} seconds")
+                    if time_elapsed > wait_time:
+                        await tts(bot, message, tts_text)
+                    else:
+                        await channel.send(f"{user.name}, you have to wait {wait_time} seconds between using tts! Cry to me about it! you have {30 - time_elapsed} seconds left.")
+    
+                # Store the time of the current message for the next comparison
+                last_message_time[user.name] = datetime.datetime.now()
+            else:
+                await tts(bot, message, tts_text)
         else:
             await channel.send("Join vc to use this command!")
 
+async def tts(bot, message, tts_text):
+    voice_channel = message.author.voice.channel
+    voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+    if (voice_client is not None) and (voice_client.channel != voice_channel):
+        await voice_client.disconnect()
+        voice_client = None
+    if voice_client is None:
+        voice_client = await voice_channel.connect()
+
+    sound = gTTS(text=tts_text, lang="en", slow=False)
+    sound.save("tts-audio.mp3")
+
+    if voice_client.is_playing():
+        voice_client.stop()
+
+    source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="tts-audio.mp3")
+    if voice_client is None or not voice_client.is_connected():
+        return
+    try:
+        voice_client.play(source)
+    except Exception as e:
+        print(e)
+        return
+
 async def f_polar_bear(bot, message, channel, req):
     if req == "polar bear":
-        from polar_bears import polar_bear_links
-        await channel.send("(Good choice)\n" + random.choice(polar_bear_links.polar_bear_links_list))
+        from animal_links import animals
+        await channel.send("(Good choice)\n" + random.choice(animals.polar_bear_links_list))
+
+async def f_mouse(bot, message, channel, req):
+    if req == "mouse":
+        from animal_links import animals
+        await channel.send(random.choice(animals.mouse_links_list))
 
 async def f_red_panda(bot, message, channel, req):
     if req == "red panda":
@@ -196,7 +237,38 @@ async def f_cheat_code(bot, message, channel, req):
 
 async def f_boobs(bot, message, channel, req):
     if req == "boobs":
-        await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
+        user = message.author.name
+        if user == user_emily_name:
+            await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
+
+        elif user != user_colton_name:
+            print(user)
+            print(user_colton_name)
+            x = random.randint(2,5)
+            if x == 5:
+                await get_tenor(channel)
+            else:
+                await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
+        else:
+            await get_tenor(channel)
+
+async def get_tenor(channel):
+    apikey = "AIzaSyCiR3gYC7B1zsiROI1hz4Lx-5ObxMk-gkQ"
+    limit = 50
+    search_term = "boobs"
+    r = requests.get(
+        "https://tenor.googleapis.com/v2/search?q=%s&key=%s&limit=%s" % (search_term, apikey, limit))
+
+    if r.status_code == 200:
+        # load the GIFs using the urls for the smaller GIF sizes
+        gifs = json.loads(r.content)
+        x = random.randint(1, limit)
+        gif = gifs['results'][x]['media_formats']['gif']['url']
+
+        # Send the GIF to the channel
+        await channel.send(gif)
+    else:
+        print("gif aint work")
 
 async def f_join(bot, message, channel, req):
     if req == "join":

@@ -99,7 +99,7 @@ async def send_daily_polar_bear():
         buffer_time = datetime.time(hour=8, minute=0, second=5)
         # If it's the send time, send the message
         if buffer_time >= now >= send_time:
-            from polar_bears import polar_bear_links
+            from animal_links import animals
             print(now)
             print(send_time)
             for channel_num in channels:
@@ -107,7 +107,7 @@ async def send_daily_polar_bear():
                 channel = bot.get_channel(channel_num)
                 # print(type(channel))
                 await channel.send(random.choice(polar_bear_pic_mesages))
-                await channel.send(random.choice(polar_bear_links.polar_bear_links_list))
+                await channel.send(random.choice(animals.polar_bear_links_list))
             # Wait until the next day to send the message again
             tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
             send_time = datetime.datetime.combine(tomorrow.date(), send_time)

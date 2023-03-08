@@ -17,3 +17,14 @@ polar_bear_links_list = ["https://static.boredpanda.com/blog/wp-content/uploads/
                     "https://thumbs.dreamstime.com/b/playful-young-polar-bears-northern-canada-two-cute-playfully-interacting-snowy-ice-hudson-bay-near-churchill-manitoba-205952366.jpg",
                     ]
 
+mouse_links_list = ["https://media.gettyimages.com/id/168497076/photo/astounded-djungarian-hamster.jpg?s=612x612&w=0&k=20&c=V43k2lqoQxHXPpfUnDSvHFkSGH2DXn-oxQVm-xDhaEc=",
+                    "https://media.gettyimages.com/id/695407204/photo/little-hamster-eating-cheese-in-a-girls-hands.jpg?s=612x612&w=0&k=20&c=aRBBScR3Rq6VlB400rQBiyHzhjlQ_I8aU_HuxD6kxkw=",
+                    "https://media.gettyimages.com/id/996902700/photo/pinky-princess.jpg?s=612x612&w=0&k=20&c=Oo7-_psQ3RPZqtmxKTdC_RvbJYlufxF_0UjkrSwRKSw=",
+                    "https://media.gettyimages.com/id/1269678242/photo/hamster-holds-on-to-a-childs-index-finger.jpg?s=612x612&w=0&k=20&c=GkqZ1rR6pTqGg0CyXE2yJTgn8HH-1TH5xR0uVngpMR8=",
+                    "https://media.gettyimages.com/id/628320778/photo/little-white-hamster-eating-carrot-in-a-childs-hand.jpg?s=612x612&w=0&k=20&c=Y56YVVljkwfdNpo38G4glDb1XUSSBl7sSdyf81fg184=",
+                    "https://media.gettyimages.com/id/1094483680/photo/harvest-mice.jpg?s=612x612&w=0&k=20&c=soMJgEnhBgkD18Rm5u0OME7RHwEdSqEpXcT0wzK27Og=",
+                    "https://media.gettyimages.com/id/685837074/photo/mouse-looking-forward.jpg?s=612x612&w=0&k=20&c=yOqNeXTQhMoMz1zaLBlCiRBhZCtjjAxu3YW40GQJpK0=",
+                    "https://media.gettyimages.com/id/155138197/photo/mouse-eating-cheese-of-the-trap.jpg?s=612x612&w=0&k=20&c=xJKg0RtH4ajYz7BtILafRdeW53hyTrpCEb6V6NIELBI=",
+                    "https://media.gettyimages.com/id/1269219927/photo/close-up-portrait-of-mouse-on-table.jpg?s=612x612&w=0&k=20&c=llYB6eScgorHhgrHBOVGVL-lzE885vy9SF-7fe5OEFo=",
+                    "https://media.gettyimages.com/id/1347290540/photo/close-up-of-squirrel-on-branch-wimborne-minster-wimborne-united-kingdom-uk.jpg?s=612x612&w=0&k=20&c=oDVwsBNZ293r8WbxwwiJ1o50fBs4Vjd60t9J_zOJpCY=",
+                    "https://media.gettyimages.com/id/1468033968/photo/woman-with-pet-rat.jpg?s=612x612&w=0&k=20&c=crIGlrgm3rqzwnwYBQSVe8w1nNAhHeZSBmfxazTGBCU="]
