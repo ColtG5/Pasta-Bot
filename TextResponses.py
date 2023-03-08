@@ -1,8 +1,10 @@
 import os
+from variables import *
 import requests
 import discord
 from gtts import gTTS
 import random
+import yt_dlp
 
 greetings = ["hi", "hey", "hello"]
 farewells = ["bye", "cya", "goodbye", "good bye"]
@@ -195,4 +197,72 @@ async def f_cheat_code(bot, message, channel, req):
 async def f_boobs(bot, message, channel, req):
     if req == "boobs":
         await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
+
+async def f_join(bot, message, channel, req):
+    if req == "join":
+        user = message.author
+        if user.voice is None:
+            await channel.send("get in a vc first")
+            return
+        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+        if voice_client and voice_client.is_connected():
+            await channel.send("I'm already in a vc!")
+            return
+        voice_channel = message.author.voice.channel
+        await voice_channel.connect()
+        print(f"Connected to {voice_channel}")
         
+async def f_play(bot, message, channel, req):
+    if req.startswith("play "):
+        to_play = req[5:]
+        user = message.author
+        if user.voice is None:
+            await channel.send("get in a vc first")
+            return     
+        voice_channel = message.author.voice.channel
+        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+        print("here")
+        if (voice_client is not None) and (voice_client.channel != voice_channel):
+            print("in a diff vc")
+            await voice_client.disconnect()
+            voice_client = None
+        if voice_client is None:
+            print("in no vc")
+            voice_client = await voice_channel.connect()
+
+                # Use yt-dlp to extract info about the YouTube video
+        # with yt_dlp.YoutubeDL({'outtmpl': 'video.mp4'}) as ydl:
+        #     info = ydl.extract_info(to_play, download=True)
+        #     filename = ydl.prepare_filename(info)
+        #     source = discord.FFmpegPCMAudio(filename)
+        #     voice_client.play(source)
+
+        ydl_opts = {
+            'format': 'bestaudio/best',       
+            'outtmpl': 'youtube-audio.mp3',       
+            'noplaylist' : True,   
+            'nooverwrites': False,        
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download(['https://www.youtube.com/watch?v=8CWy_-afIpY&ab_channel=TheWeeknd-Topic'])
+        
+        source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
+        voice_client.play(source)
+
+async def f_leave(bot, message, channel, req):
+    if req == "leave":
+        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+        if voice_client and voice_client.is_connected():
+            await voice_client.disconnect()
+            print(f"Disconnected from {voice_client.channel}")
+        else:
+            print("I was told to leave voice channel, but was not in one")  
+
+async def f_pun(bot, message, channel, req):
+    if req == "pun":
+        headers = {
+        "Accept": "application/json"
+        }
+        pun = requests.get("https://icanhazdadjoke.com/", headers=headers).json()
+        print(pun)
+        await channel.send(pun["joke"])

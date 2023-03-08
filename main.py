@@ -1,4 +1,5 @@
 import os
+from variables import *
 import random
 import asyncio
 import datetime
@@ -6,6 +7,7 @@ import discord
 from discord.ext import commands
 from gtts import gTTS
 from dotenv import load_dotenv
+
 
 # get environment variables from .env file using library dotenv
 
@@ -78,7 +80,6 @@ async def bot_commands(ctx):
 
     intro = "```Pasta Bot!\nUsage: !pasta <command> [arguments (for some)] | Current commands:\n"
     funcs = "\n".join(bot_functions)
-    # wrap funcs with the string ``` to make it a code block
     await ctx.send(intro + "\n" + funcs + "```")
 
 polar_bear_pic_mesages = ["Here is your polar bear picture for the day:", "Enjoy this lovely polar bear picture to start your day off:",
@@ -87,16 +88,17 @@ polar_bear_pic_mesages = ["Here is your polar bear picture for the day:", "Enjoy
 
 async def send_daily_polar_bear():
     await bot.wait_until_ready()
-    channels1 = [799154480947134491, 966107743213748274, 905206514665529448, 1081413945329463339]
-    channels = [1081413945329463339]
+    channels = [799154480947134491, 966107743213748274, 905206514665529448, 1081413945329463339]
+    channels1 = [1081413945329463339]
     while not bot.is_closed():
         # Get the current time
         now = datetime.datetime.now().time()
         # Set the time you want the message to be sent
         # send_time = datetime.time(hour=6, minute=0, second=0)
-        send_time = datetime.time(hour=5, minute=5, second=0)
+        send_time = datetime.time(hour=8, minute=0, second=0)
+        buffer_time = datetime.time(hour=8, minute=0, second=5)
         # If it's the send time, send the message
-        if now >= send_time:
+        if buffer_time >= now >= send_time:
             from polar_bears import polar_bear_links
             print(now)
             print(send_time)
@@ -120,18 +122,16 @@ async def send_daily_polar_bear():
 async def on_voice_state_update(member, before, after):
     if member.bot and after.channel is None:
         async for entry in before.channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_disconnect):
-            print(entry)
-            if entry.target and entry.target.id == member.id:
-                print(f"The bot was disconnected from {before.channel.name} by {entry.user.name}")
-    elif after.channel is not None:
-        async for entry in after.channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_disconnect):
-            print(entry)
-            if entry.target and entry.target.id == member.id:
-                print(f"{member.name} was disconnected from {after.channel.name} by {entry.user.name}")
+            if entry.user.name == user_bjorn_name:
+                print(entry.user.name, user_colton_name)
+                print(f"{member} was disconnected from {before.channel} by {entry.user}")
+                await entry.user.edit(mute=True)
 
-
-
-
+@bot.event
+async def on_member_update(before, after):
+    if after.id == bot.user.id:  # Check if the updated member is the bot
+        if before.nick != after.nick:  # Check if the nickname has changed
+            print(f"The bot's nickname was changed from {before.nick} to {after.nick} by {after.display_name}")
 
 if __name__ == '__main__':
     bot.run(os.environ.get('TOKEN'))
