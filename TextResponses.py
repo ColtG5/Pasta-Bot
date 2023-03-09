@@ -7,7 +7,10 @@ import random
 import yt_dlp
 import json
 import datetime
+import asyncio
 
+wait_time = 17
+last_message_time = {}
 greetings = ["hi", "hey", "hello"]
 farewells = ["bye", "cya", "goodbye", "good bye"]
 tishie = ["tishie", "dumb cat", "burger material", "bathtub shitter"]
@@ -18,7 +21,7 @@ misogyny = ["\"dishwasHER\" -ColtG5",
              "\"A proper wife should be as obedient as a slave . . . The female is a female by virtue of a certain lack of qualities . . . a natural defectiveness.\" -Aristotle",
              "\"Women are only stronger when they arm themselves with their weaknesses.\" -Marquise Du Deffand"]
 
-async def f_pasta(bot, message, channel, req):
+async def f_pasta(bot, message, channel, req, upper_req):
     if req == "pasta":
         app_id = os.environ.get('FOOD_APP_ID')
         app_key = os.environ.get('FOOD_APP_KEY')
@@ -39,13 +42,13 @@ async def f_pasta(bot, message, channel, req):
         else:
             print("Error: could not retrieve data from API.")
 
-async def f_hello(bot, message, channel, req):
+async def f_hello(bot, message, channel, req, upper_req):
     if req in greetings:
         user = message.author
         user = str(user).split("#")[0]
         await channel.send(f"Hello {user}!")
 
-async def f_goodbye(bot, message, channel, req):
+async def f_goodbye(bot, message, channel, req, upper_req):
     if req in farewells:
         user = message.author
         user = str(user).split("#")[0]
@@ -54,29 +57,27 @@ async def f_goodbye(bot, message, channel, req):
         else:
             await channel.send(f"Goodbye {user}.")
 
-async def f_thanks(bot, message, channel, req):
+async def f_thanks(bot, message, channel, req, upper_req):
     if req == "thanks":
         await channel.send("np")
 
-async def f_fox(bot, message, channel, req):
+async def f_fox(bot, message, channel, req, upper_req):
     if req == "fox":
         response = requests.get("https://randomfox.ca/floof/?ref=apilist.fun")
         image_link = response.json()["image"]
         await channel.send(image_link)
 
-async def f_wisdom(bot, message, channel, req):
+async def f_wisdom(bot, message, channel, req, upper_req):
     if req == "wisdom":
         response = requests.get("https://zenquotes.io/api/random").json()
         quote = "\"" + response[0]['q'] + "\"" + " -" + response[0]['a']
         await channel.send(quote)
 
-async def f_misogyny(bot, message, channel, req):
+async def f_misogyny(bot, message, channel, req, upper_req):
     if req == "misogyny":
         await channel.send(random.choice(misogyny))
 
-last_message_time = {}
-
-async def f_tts(bot, message, channel, req):
+async def f_tts(bot, message, channel, req, upper_req):
     if req.startswith("tts "):
         tts_text = req[4:]
         user = message.author
@@ -87,25 +88,17 @@ async def f_tts(bot, message, channel, req):
                 # Check if the author has sent a message before
                 print(last_message_time)
                 if user.name in last_message_time:
-                    # Get the time of the last message sent by the author
                     last_time = last_message_time[user.name]
-                    
-                    # Get the current time
                     current_time = datetime.datetime.now()
-                    
-                    # Calculate the time elapsed since the last message
                     time_elapsed = (current_time - last_time).total_seconds()
-                    
-                    # Do something with the time elapsed (e.g. print it)
                     print(f"Time elapsed since last message: {time_elapsed} seconds")
 
-                    wait_time = 60
-                    print(f"time elapsed: {time_elapsed} seconds")
                     if time_elapsed > wait_time:
                         await tts(bot, message, tts_text)
                     else:
-                        await channel.send(f"{user.name}, you have to wait {wait_time} seconds between using tts! Cry to me about it! you have {30 - time_elapsed} seconds left.")
-    
+                        await channel.send(f"{user.name}, you have to wait {wait_time} seconds between using tts! Cry to me about it! you have {round(wait_time - time_elapsed)} seconds left.")
+                else:
+                    await tts(bot, message, tts_text)
                 # Store the time of the current message for the next comparison
                 last_message_time[user.name] = datetime.datetime.now()
             else:
@@ -137,53 +130,53 @@ async def tts(bot, message, tts_text):
         print(e)
         return
 
-async def f_polar_bear(bot, message, channel, req):
+async def f_polar_bear(bot, message, channel, req, upper_req):
     if req == "polar bear":
         from animal_links import animals
         await channel.send("(Good choice)\n" + random.choice(animals.polar_bear_links_list))
 
-async def f_mouse(bot, message, channel, req):
-    if req == "mouse":
+async def f_mouse(bot, message, channel, req, upper_req):
+    if req == "mouse" or req == "mice":
         from animal_links import animals
         await channel.send(random.choice(animals.mouse_links_list))
 
-async def f_red_panda(bot, message, channel, req):
+async def f_red_panda(bot, message, channel, req, upper_req):
     if req == "red panda":
         response = requests.get("https://some-random-api.ml/img/red_panda")
         image_link = response.json()["link"]
         await channel.send(image_link)
 
-async def f_cat(bot, message, channel, req):
+async def f_cat(bot, message, channel, req, upper_req):
     if req == "cat":
         response = requests.get("https://some-random-api.ml/img/cat")
         image_link = response.json()["link"]
         await channel.send(image_link)
 
-async def f_dog(bot, message, channel, req):
+async def f_dog(bot, message, channel, req, upper_req):
     if req == "dog":
         response = requests.get("https://some-random-api.ml/img/dog")
         image_link = response.json()["link"]
         await channel.send(image_link)
 
-async def f_panda(bot, message, channel, req):
+async def f_panda(bot, message, channel, req, upper_req):
     if req == "panda":
         response = requests.get("https://some-random-api.ml/img/panda")
         image_link = response.json()["link"]
         await channel.send(image_link)
 
-async def f_koala(bot, message, channel, req):
+async def f_koala(bot, message, channel, req, upper_req):
     if req == "koala":
         response = requests.get("https://some-random-api.ml/img/koala")
         image_link = response.json()["link"]
         await channel.send(image_link)
 
-async def f_raccoon(bot, message, channel, req):
+async def f_raccoon(bot, message, channel, req, upper_req):
     if req == "raccoon":
         response = requests.get("https://some-random-api.ml/img/raccoon")
         image_link = response.json()["link"]
         await channel.send(image_link)
 
-async def f_milf(bot, message, channel, req):
+async def f_milf(bot, message, channel, req, upper_req):
     if req == "milf":
         folder_path = "milfs"
         files = os.listdir(folder_path)
@@ -196,7 +189,7 @@ async def f_milf(bot, message, channel, req):
             image = discord.File(f)
             await channel.send(file=image)
 
-async def f_dilf(bot, message, channel, req):
+async def f_dilf(bot, message, channel, req, upper_req):
     if req == "dilf":
         folder_path = "dilfs"
         files = os.listdir(folder_path)
@@ -209,7 +202,7 @@ async def f_dilf(bot, message, channel, req):
             image = discord.File(f)
             await channel.send(file=image)
 
-async def f_tishie(bot, message, channel, req):
+async def f_tishie(bot, message, channel, req, upper_req):
     if req in tishie:
         folder_path = "tishie"
         files = os.listdir(folder_path)
@@ -222,7 +215,7 @@ async def f_tishie(bot, message, channel, req):
             image = discord.File(f)
             await channel.send(file=image)
 
-async def f_cheat_code(bot, message, channel, req):
+async def f_cheat_code(bot, message, channel, req, upper_req):
     if req == "cheat code":
         arrow_up = discord.PartialEmoji(name=':arrow_up:', id=None).__str__()
         arrow_down = discord.PartialEmoji(name=':arrow_down:', id=None).__str__()
@@ -235,7 +228,7 @@ async def f_cheat_code(bot, message, channel, req):
         # join objects into a string
         await message.channel.send("".join([arrow_up, arrow_up, arrow_down, arrow_down, arrow_left, arrow_right, arrow_left, arrow_right, b, a, start]))
 
-async def f_boobs(bot, message, channel, req):
+async def f_boobs(bot, message, channel, req, upper_req):
     if req == "boobs":
         user = message.author.name
         if user == user_emily_name:
@@ -244,7 +237,7 @@ async def f_boobs(bot, message, channel, req):
         elif user != user_colton_name:
             print(user)
             print(user_colton_name)
-            x = random.randint(2,5)
+            x = random.randint(3,5)
             if x == 5:
                 await get_tenor(channel)
             else:
@@ -270,7 +263,7 @@ async def get_tenor(channel):
     else:
         print("gif aint work")
 
-async def f_join(bot, message, channel, req):
+async def f_join(bot, message, channel, req, upper_req):
     if req == "join":
         user = message.author
         if user.voice is None:
@@ -284,44 +277,48 @@ async def f_join(bot, message, channel, req):
         await voice_channel.connect()
         print(f"Connected to {voice_channel}")
         
-async def f_play(bot, message, channel, req):
+async def f_play(bot, message, channel, req, upper_req):
     if req.startswith("play "):
-        to_play = req[5:]
-        user = message.author
-        if user.voice is None:
-            await channel.send("get in a vc first")
-            return     
-        voice_channel = message.author.voice.channel
+        if upper_req.startswith("https://www.youtube.com/"):
+            upper_req = upper_req[5:]
+            user = message.author
+            if user.voice is None:
+                await channel.send("get in a vc first")
+                return     
+            voice_channel = message.author.voice.channel
+            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+            if (voice_client is not None) and (voice_client.channel != voice_channel):
+                print("in a diff vc")
+                await voice_client.disconnect()
+                voice_client = None
+            if voice_client is None:
+                print("in no vc")
+                voice_client = await voice_channel.connect()
+
+            ydl_opts = {
+                'format': 'bestaudio/best',       
+                'outtmpl': 'youtube-audio.mp3',       
+                'noplaylist' : True,   
+                'nooverwrites': False,        
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([upper_req])
+            
+            source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
+            voice_client.play(source)
+        else:
+            await channel.send("bruh")
+
+async def f_stop(bot, message, channel, req, upper_req):
+    if req == "stop":
         voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-        print("here")
-        if (voice_client is not None) and (voice_client.channel != voice_channel):
-            print("in a diff vc")
-            await voice_client.disconnect()
-            voice_client = None
-        if voice_client is None:
-            print("in no vc")
-            voice_client = await voice_channel.connect()
+        if voice_client and voice_client.is_playing():
+            voice_client.stop()
+            print(f"Stopped {voice_client.channel}")
+        else:
+            print("bruh")
 
-                # Use yt-dlp to extract info about the YouTube video
-        # with yt_dlp.YoutubeDL({'outtmpl': 'video.mp4'}) as ydl:
-        #     info = ydl.extract_info(to_play, download=True)
-        #     filename = ydl.prepare_filename(info)
-        #     source = discord.FFmpegPCMAudio(filename)
-        #     voice_client.play(source)
-
-        ydl_opts = {
-            'format': 'bestaudio/best',       
-            'outtmpl': 'youtube-audio.mp3',       
-            'noplaylist' : True,   
-            'nooverwrites': False,        
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(['https://www.youtube.com/watch?v=8CWy_-afIpY&ab_channel=TheWeeknd-Topic'])
-        
-        source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
-        voice_client.play(source)
-
-async def f_leave(bot, message, channel, req):
+async def f_leave(bot, message, channel, req, upper_req):
     if req == "leave":
         voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
         if voice_client and voice_client.is_connected():
@@ -330,7 +327,7 @@ async def f_leave(bot, message, channel, req):
         else:
             print("I was told to leave voice channel, but was not in one")  
 
-async def f_pun(bot, message, channel, req):
+async def f_pun(bot, message, channel, req, upper_req):
     if req == "pun":
         headers = {
         "Accept": "application/json"

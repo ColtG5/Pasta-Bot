@@ -1,8 +1,10 @@
 import random
 from variables import *
 
-sydney_smells = ["stfu", "shut up", "rude", "hey", "fuck", "shit", "i hate you", "stop", "kys", "kill your self", "kill yourself", "die", "dumb", "stupid"]
-sydney_insults = ["Sydney kinda smells tbh", "Sydney u better stop w that shenanigans", "RUDE SYDNEY!!!", "Rude! this y u a mistake ong", "Syd go ash ur mouth w that speak"]
+sydney_smells = ["stfu", "shut up", "rude", "fuck", "shit", "i hate you",
+                  "stop", "kys", "kill your self", "kill yourself", "die", "dumb", "stupid"]
+sydney_insults = ["Sydney kinda smells tbh", "Sydney u better stop w that shenanigans",
+                   "RUDE SYDNEY!!!", "Rude! this y u a mistake ong", "Syd go wash ur mouth w that speak"]
 async def f_isItSydney(bot, message, channel, text, author):
     if (author == "Sydney"):
         if any(word in text for word in sydney_smells):

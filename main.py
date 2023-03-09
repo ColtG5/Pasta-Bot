@@ -47,13 +47,14 @@ async def on_message(message):
 
 async def handle_user_request(message):
     channel = message.channel
+    normal_req = message.content[7:]
     user_request = message.content[7:].lower()
 
     import TextResponses
     for i in dir(TextResponses):
         function = getattr(TextResponses,i)
         if i.startswith('f_') and callable(function):
-            await function(bot, message, channel, user_request)
+            await function(bot, message, channel, user_request, normal_req)
     
 async def handle_author(message):
     channel = message.channel
