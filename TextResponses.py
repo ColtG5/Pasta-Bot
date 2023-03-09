@@ -349,11 +349,18 @@ async def f_pun(bot, message, channel, req, upper_req):
         await channel.send(pun["joke"])
 
 async def f_pokemon(bot, message, channel, req, upper_req):
-    if req == "pokemon":
+    if req.startswith("pokemon"):
         count = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset=1").json().get("count")
         x = random.randint(1, count)
-        print(count)
+        # print(count)
         pokemon = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset={x}").json()
         poke = pokemon.get("results")[0].get("url")
-        pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
+        shiny_chance = random.randint(1, 673)
+        if user_colton_name == message.author.name and req[8:] == "shiny":
+            pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
+        else:
+            if shiny_chance == 5:
+                pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
+            else:
+                pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
         await channel.send(pic)

@@ -78,6 +78,7 @@ async def bot_commands(ctx):
 
     bot_functions = [i.replace("_", " ") for i in bot_functions]
     bot_functions[bot_functions.index("tts")] = "tts [message] (have to be in a vc)"
+    bot_functions[bot_functions.index("pokemon")] = "pokemon (1/673 chance for a shiny!)"
 
     intro = "```Pasta Bot!\nUsage: !pasta <command> [arguments (for some)] | Current commands:\n"
     funcs = "\n".join(bot_functions)
