@@ -9,7 +9,7 @@ import json
 import datetime
 import asyncio
 
-wait_time = 17
+wait_time = 25
 last_message_time = {}
 greetings = ["hi", "hey", "hello"]
 farewells = ["bye", "cya", "goodbye", "good bye"]
@@ -279,44 +279,50 @@ async def f_join(bot, message, channel, req, upper_req):
         
 async def f_play(bot, message, channel, req, upper_req):
     if req.startswith("play "):
-        if upper_req.startswith("https://www.youtube.com/"):
-            upper_req = upper_req[5:]
-            user = message.author
-            if user.voice is None:
-                await channel.send("get in a vc first")
-                return     
-            voice_channel = message.author.voice.channel
-            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-            if (voice_client is not None) and (voice_client.channel != voice_channel):
-                print("in a diff vc")
-                await voice_client.disconnect()
-                voice_client = None
-            if voice_client is None:
-                print("in no vc")
-                voice_client = await voice_channel.connect()
+        upper_req = upper_req[5:]
+        if message.author.name == user_colton_name:
+            if upper_req.startswith("https://www.youtube.com/"):
+                user = message.author
+                if user.voice is None:
+                    await channel.send("get in a vc first")
+                    return     
+                voice_channel = message.author.voice.channel
+                voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+                if (voice_client is not None) and (voice_client.channel != voice_channel):
+                    print("in a diff vc")
+                    await voice_client.disconnect()
+                    voice_client = None
+                if voice_client is None:
+                    print("in no vc")
+                    voice_client = await voice_channel.connect()
 
-            ydl_opts = {
-                'format': 'bestaudio/best',       
-                'outtmpl': 'youtube-audio.mp3',       
-                'noplaylist' : True,   
-                'nooverwrites': False,        
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([upper_req])
-            
-            source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
-            voice_client.play(source)
+                ydl_opts = {
+                    'format': 'bestaudio/best',       
+                    'outtmpl': 'youtube-audio.mp3',       
+                    'noplaylist' : True,   
+                    'nooverwrites': False,        
+                }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([upper_req])
+                
+                source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
+                voice_client.play(source)
+            else:
+                await channel.send("bruh")
         else:
-            await channel.send("bruh")
+            await channel.send("chump")
 
 async def f_stop(bot, message, channel, req, upper_req):
     if req == "stop":
-        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-        if voice_client and voice_client.is_playing():
-            voice_client.stop()
-            print(f"Stopped {voice_client.channel}")
+        if message.author.name == user_colton_name:
+            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+            if voice_client and voice_client.is_playing():
+                voice_client.stop()
+                print(f"Stopped {voice_client.channel}")
+            else:
+                print("bruh")
         else:
-            print("bruh")
+            await channel.send("chump")
 
 async def f_leave(bot, message, channel, req, upper_req):
     if req == "leave":
@@ -327,6 +333,12 @@ async def f_leave(bot, message, channel, req, upper_req):
         else:
             print("I was told to leave voice channel, but was not in one")  
 
+async def f_dc(bot, message, channel, req, upper_req):
+    if req == "dc":
+        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+        if voice_client and voice_client.is_connected():
+            await voice_client.disconnect()
+
 async def f_pun(bot, message, channel, req, upper_req):
     if req == "pun":
         headers = {
@@ -335,3 +347,13 @@ async def f_pun(bot, message, channel, req, upper_req):
         pun = requests.get("https://icanhazdadjoke.com/", headers=headers).json()
         print(pun)
         await channel.send(pun["joke"])
+
+async def f_pokemon(bot, message, channel, req, upper_req):
+    if req == "pokemon":
+        count = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset=1").json().get("count")
+        x = random.randint(1, count)
+        print(count)
+        pokemon = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset={x}").json()
+        poke = pokemon.get("results")[0].get("url")
+        pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
+        await channel.send(pic)
