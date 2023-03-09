@@ -267,7 +267,7 @@ async def f_join(bot, message, channel, req, upper_req):
     if req == "join":
         user = message.author
         if user.voice is None:
-            await channel.send("get in a vc first")
+            await channel.send("get in a vc first ! ! !")
             return
         voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
         if voice_client and voice_client.is_connected():
@@ -314,15 +314,12 @@ async def f_play(bot, message, channel, req, upper_req):
 
 async def f_stop(bot, message, channel, req, upper_req):
     if req == "stop":
-        if message.author.name == user_colton_name:
-            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-            if voice_client and voice_client.is_playing():
-                voice_client.stop()
-                print(f"Stopped {voice_client.channel}")
-            else:
-                print("bruh")
+        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+        if voice_client and voice_client.is_playing():
+            voice_client.stop()
+            print(f"Stopped {voice_client.channel}")
         else:
-            await channel.send("chump")
+            print("get in a vc")
 
 async def f_leave(bot, message, channel, req, upper_req):
     if req == "leave":
@@ -356,11 +353,18 @@ async def f_pokemon(bot, message, channel, req, upper_req):
         pokemon = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset={x}").json()
         poke = pokemon.get("results")[0].get("url")
         shiny_chance = random.randint(1, 673)
-        if user_colton_name == message.author.name and req[8:] == "shiny":
+        if req[8:] == "shiny":
+            if user_colton_name != message.author.name:
+                await channel.send("you're not him :rofl:")
+                return
+            else:
+                pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
+                await channel.send(pic)
+                return
+
+        if shiny_chance == 5:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
         else:
-            if shiny_chance == 5:
-                pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
-            else:
-                pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
+            pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
         await channel.send(pic)
+        # await channel.send("you're not him :rofl:")
