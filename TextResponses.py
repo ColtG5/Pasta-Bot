@@ -345,6 +345,9 @@ async def f_pun(bot, message, channel, req, upper_req):
         print(pun)
         await channel.send(pun["joke"])
 
+shiny_messages = ["damn, you got a shiny!", "SHINYYYYYYYYYYYY", "That's a shiny, well done!"]
+shiny_messages_parker = ["Parker the absolute goat with yet another shiny somehow", "Now this is a Parker moment", "Nice shiny Parker!"]
+shiny_odds = 673
 async def f_pokemon(bot, message, channel, req, upper_req):
     if req.startswith("pokemon"):
         count = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset=1").json().get("count")
@@ -352,7 +355,7 @@ async def f_pokemon(bot, message, channel, req, upper_req):
         # print(count)
         pokemon = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset={x}").json()
         poke = pokemon.get("results")[0].get("url")
-        shiny_chance = random.randint(1, 673)
+        shiny_chance = random.randint(1, shiny_odds)
         if req[8:] == "shiny":
             if user_colton_name != message.author.name:
                 await channel.send("you're not him :rofl:")
@@ -360,11 +363,17 @@ async def f_pokemon(bot, message, channel, req, upper_req):
             else:
                 pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
                 await channel.send(pic)
+                await channel.send(random.choice(shiny_messages))
                 return
 
         if shiny_chance == 5:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
+            if message.author.name == user_parker_name:
+                await channel.send(pic)
+                await channel.send(random.choice(shiny_messages_parker))
+            else:
+                await channel.send(pic)
+                await channel.send(random.choice(shiny_messages))
         else:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
-        await channel.send(pic)
-        # await channel.send("you're not him :rofl:")
+            await channel.send(pic)
