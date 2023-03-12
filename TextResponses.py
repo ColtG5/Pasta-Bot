@@ -1,4 +1,5 @@
 import os
+from Hangman import Hangman
 from variables import *
 import requests
 import discord
@@ -80,6 +81,8 @@ async def f_misogyny(bot, message, channel, req, upper_req):
 async def f_tts(bot, message, channel, req, upper_req):
     if req.startswith("tts "):
         tts_text = req[4:]
+        if "sydney" in tts_text.lower():
+            tts_text = tts_text.replace("sydney", "dayvin")
         user = message.author
         # print(user.name)
         # print(user_emily_name)
@@ -348,6 +351,7 @@ async def f_pun(bot, message, channel, req, upper_req):
 shiny_messages = ["damn, you got a shiny!", "SHINYYYYYYYYYYYY", "That's a shiny, well done!"]
 shiny_messages_parker = ["Parker the absolute goat with yet another shiny somehow", "Now this is a Parker moment", "Nice shiny Parker!"]
 shiny_odds = 673
+
 async def f_pokemon(bot, message, channel, req, upper_req):
     if req.startswith("pokemon"):
         count = requests.get(f"https://pokeapi.co/api/v2/pokemon/?limit=1&offset=1").json().get("count")
@@ -377,3 +381,48 @@ async def f_pokemon(bot, message, channel, req, upper_req):
         else:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
             await channel.send(pic)
+
+async def f_sydney_based(bot, message, channel, req, upper_req):
+    if req == "sydney based":
+        if message.author.name == user_sydney_name:
+            folder_path = "pics"
+            files = os.listdir(folder_path)
+            image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif"))]
+
+            random_file = random.choice(image_files)
+            random_file_path = os.path.join(folder_path, random_file)
+
+            with open(random_file_path, 'rb') as f:
+                image = discord.File(f)
+                await channel.send(file=image)
+        else:
+            await channel.send("you're not the disney princess herself unfortunately")
+
+eight_ball_responses = ["It is certain", "Don’t count on it", 
+                        "It is decidedly so", "My reply is no", 
+                        "Without a doubt", "Better not tell you now", "My sources say no", 
+                        "Yes definitely", "Outlook not so good", 
+                        "You may rely on it", "Concentrate and ask again", "Very doubtful",
+                        "As I see it, yes", "Most likely", "Outlook good", "Yes", "Signs point to yes"]
+
+async def f_8ball(bot, message, channel, req, upper_req):
+    if req.startswith("8ball "):
+        if not req.endswith("?"):
+            await channel.send("Ask the 8 ball a question! (end with a '?')")
+        else:
+            await channel.send(random.choice(eight_ball_responses))
+
+hangman_games = {}
+
+async def f_hangman(bot, message, channel, req, upper_req):
+    author = message.author
+    if req.startswith("hangman "):
+        if req[8:] == "start":
+            if message.author in hangman_games:
+                await channel.send("you're already in a game")
+            else:
+                hangman_game = Hangman("teeth")
+                hangman_games[message.author] = hangman_game
+                await channel.send("game started")
+    if (author in hangman_games):
+        pass

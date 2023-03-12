@@ -49,6 +49,7 @@ async def handle_user_request(message):
     channel = message.channel
     normal_req = message.content[7:]
     user_request = message.content[7:].lower()
+    req_text = message.content
 
     import TextResponses
     for i in dir(TextResponses):
@@ -79,6 +80,8 @@ async def bot_commands(ctx):
     bot_functions = [i.replace("_", " ") for i in bot_functions]
     bot_functions[bot_functions.index("tts")] = "tts [message] (have to be in a vc)"
     bot_functions[bot_functions.index("pokemon")] = "pokemon (1/673 chance for a shiny!)"
+    bot_functions[bot_functions.index("sydney based")] = "sydney based (sydney exclusive!)"
+    bot_functions[bot_functions.index("8ball")] = "8ball [question] ?"
 
     intro = "```Pasta Bot!\nUsage: !pasta <command> [arguments (for some)] | Current commands:\n"
     funcs = "\n".join(bot_functions)
