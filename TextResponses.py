@@ -414,15 +414,42 @@ async def f_8ball(bot, message, channel, req, upper_req):
 
 hangman_games = {}
 
+
 async def f_hangman(bot, message, channel, req, upper_req):
     author = message.author
+    if req == "hangman":
+        await channel.send("Pasta hangman!\nHangman commands: \nstart \nend \n<letter>")
+        return
     if req.startswith("hangman "):
-        if req[8:] == "start":
-            if message.author in hangman_games:
-                await channel.send("you're already in a game")
+        req = req[8:]
+        if req == "start":
+            if author in hangman_games:
+                await channel.send("You're already in a game!")
+                return
             else:
-                hangman_game = Hangman("teeth")
-                hangman_games[message.author] = hangman_game
-                await channel.send("game started")
-    if (author in hangman_games):
-        pass
+                hangman_game = Hangman(author, Hangman.choose_random_word())
+                hangman_games[author] = hangman_game
+                await channel.send(hangman_game.start_up())
+                return
+        if req == "end":
+            if author not in hangman_games:
+                await channel.send("You don't have a game to end!")
+                return
+            else:
+                hangman_game = hangman_games[author]
+                await channel.send(hangman_game.end())
+                del hangman_games[author]
+                return
+
+        if len(req) == 1 and req.isalpha():
+            if author in hangman_games:
+                hangman_game = hangman_games[author]
+                await channel.send(hangman_game.guess(req))
+                if hangman_game.done:
+                    del hangman_games[author]
+                return
+            else:
+                await channel.send("Start a game before guessing a letter!")
+                return
+        await channel.send("Invalid hangman command! type 'hangman' for help")
+        

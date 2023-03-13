@@ -49,7 +49,7 @@ async def handle_user_request(message):
     channel = message.channel
     normal_req = message.content[7:]
     user_request = message.content[7:].lower()
-    req_text = message.content
+    # req_text = message.content
 
     import TextResponses
     for i in dir(TextResponses):
