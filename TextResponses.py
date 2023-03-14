@@ -414,7 +414,6 @@ async def f_8ball(bot, message, channel, req, upper_req):
 
 hangman_games = {}
 
-
 async def f_hangman(bot, message, channel, req, upper_req):
     author = message.author
     if req == "hangman":
@@ -453,3 +452,23 @@ async def f_hangman(bot, message, channel, req, upper_req):
                 return
         await channel.send("Invalid hangman command! type 'hangman' for help")
         
+acceptable_apologies = ["Colton is the bestest ever! I just love everything about him. He definitely deserves the world!"]
+
+async def f_emily(bot, message, channel, req, upper_req):
+    print("here3")
+    if req.startswith("emily"):
+        print("here2")
+        req = upper_req[6:]
+        if (message.author.name == user_emily_name) or message.author.name == user_colton_name:
+            print("here")
+            print(req)
+            if req in acceptable_apologies:
+                import AuthorSendsMessage
+                emilys_odds = AuthorSendsMessage.emilys_odds
+                await channel.send(f"Thank you!. Odds have been changed from 1 in {emilys_odds} to 1 in {emilys_odds + 50}.")
+                emilys_odds += 50
+                AuthorSendsMessage.emilys_odds = emilys_odds
+            else:
+                await channel.send(f"That's not a valid request Ms. Lane. (hint: try `{acceptable_apologies[0]}`)")
+        else:
+            await channel.send("You're not emily, you can't change her odds for her.")

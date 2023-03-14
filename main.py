@@ -23,6 +23,7 @@ async def on_ready():
     print("Logged in as {0.user}".format(bot))
     bot.loop.create_task(send_daily_polar_bear())
 
+
     for guild in bot.guilds:
         if guild.me.guild_permissions.view_audit_log:
             print(f"{bot.user} has permission to view audit logs in {guild}")
