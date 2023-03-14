@@ -35,14 +35,14 @@ class Hangman():
                 self.done = True
                 return f"You finished the word {self.author.mention}! The word was {self.word}!\nYou did it with {self.maxlives - self.lives} lives left! Nice work {self.author.nick}! The game is now over."
             else:
-                return f"Correct {self.author.mention}! '{letter}' is in the word.\n" + self.print_guesses_and_lives() + "\nWhat's your next guess?"
+                return f"Correct {self.author.mention}! '{letter}' is in the word.\n{self.print_guesses_and_lives()}\nWhat's your next guess?"
         else:
             self.lives += 1
             if self.lives == self.maxlives:
                 self.done = True
                 return f"You lost {self.author.mention}! The word was {self.word}.\nThanks for playing!"
             else:
-                return f'''Incorrect {self.author.mention}! '{letter}' is **not** in the word.\n" + self.print_guesses_and_lives() + "\nWhat's your next guess?'''
+                return f"Incorrect {self.author.mention}! '{letter}' is **not** in the word.\n{self.print_guesses_and_lives()}\nWhat's your next guess?"
 
     
     def check(self):

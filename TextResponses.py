@@ -367,17 +367,17 @@ async def f_pokemon(bot, message, channel, req, upper_req):
             else:
                 pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
                 await channel.send(pic)
-                await channel.send(random.choice(shiny_messages))
+                await channel.send(f"damn {message.author.mention}, you got a shiny!")
                 return
 
         if shiny_chance == 5:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
             if message.author.name == user_parker_name:
                 await channel.send(pic)
-                await channel.send(random.choice(shiny_messages_parker))
+                await channel.send(f"hey Mr. P-Man! {message.author.mention}, you got another shiny! (are you tryna make ur whole pokedex shiny???)")
             else:
                 await channel.send(pic)
-                await channel.send(random.choice(shiny_messages))
+                await channel.send(f"damn {message.author.mention}, you got a shiny!")
         else:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_default")
             await channel.send(pic)
