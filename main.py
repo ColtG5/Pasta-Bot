@@ -22,6 +22,7 @@ bot.remove_command('help')
 async def on_ready():
     print("Logged in as {0.user}".format(bot))
     bot.loop.create_task(send_daily_polar_bear())
+    bot.loop.create_task(send_daily_emi_meds_reminder())
 
 
     for guild in bot.guilds:
@@ -32,6 +33,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    print(message.guild)
     author = message.author
     text = message.content.lower()
     if author == bot.user:
@@ -97,10 +99,7 @@ async def send_daily_polar_bear():
     channels = [799154480947134491, 966107743213748274, 905206514665529448, 1081413945329463339]
     channels1 = [1081413945329463339]
     while not bot.is_closed():
-        # Get the current time
         now = datetime.datetime.now().time()
-        # Set the time you want the message to be sent
-        # send_time = datetime.time(hour=6, minute=0, second=0)
         send_time = datetime.time(hour=8, minute=0, second=0)
         buffer_time = datetime.time(hour=8, minute=0, second=5)
         # If it's the send time, send the message
@@ -124,12 +123,55 @@ async def send_daily_polar_bear():
             wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
             await asyncio.sleep(wait_time)
 
+waiting_for_emis_response = False;
+emi_responded = False;
+# emi_string = f"{discord.Member(guild=discord.Guild(id=905206514665529445), data=user_emi).mention}, it's time to take your meds emi!"
+emi_string = f"{discord.Member(guild=discord.Guild(data=905206514665529445), data=user_colton).mention}, it's time to take your meds emi!"
+
+async def send_daily_emi_meds_reminder():
+    await bot.wait_until_ready()
+    # channel = bot.get_channel(1086882547973230714)
+    channel = bot.get_channel(1081413945329463339)
+    while not bot.is_closed():
+        now = datetime.datetime.now().time()
+        # send_time = datetime.time(hour=21, minute=30, second=0)
+        # buffer_time = datetime.time(hour=21, minute=30, second=5)
+        send_time = datetime.time(hour=3, minute=1, second=0)
+        buffer_time = datetime.time(hour=3, minute=1, second=5)
+        # If it's the send time, send the message
+        if buffer_time >= now >= send_time:
+            if (not waiting_for_emis_response):
+                await channel.send(emi_string)
+                # Wait until the next day to send the message again
+                tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+                send_time = datetime.datetime.combine(tomorrow.date(), send_time)
+
+                # wait_time = (send_time - datetime.datetime.now()).total_seconds()
+                wait_time = datetime.time(hour=0, minute=5, second=0)
+                waiting_for_emis_response = True
+                await asyncio.sleep(wait_time)
+            else:
+                if emi_responded == True:
+                    waiting_for_emis_response = False;
+                    emi_responded = False;
+                    wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
+                    asyncio.sleep(wait_time)
+
+                else:
+                    await channel.send(emi_string.__add__("!!!"))
+                    asyncio.sleep(wait_time)
+
+        else:
+            # Wait until the send time
+            wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
+            await asyncio.sleep(wait_time)
+
 @bot.event
 async def on_voice_state_update(member, before, after):
     if member.bot and after.channel is None:
         async for entry in before.channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_disconnect):
             if entry.user.name == user_bjorn_name:
-                print(entry.user.name, user_colton_name)
+                # print(entry.user.name, user_colton_name)
                 print(f"{member} was disconnected from {before.channel} by {entry.user}")
                 await entry.user.edit(mute=True)
 

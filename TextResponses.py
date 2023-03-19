@@ -452,23 +452,45 @@ async def f_hangman(bot, message, channel, req, upper_req):
                 return
         await channel.send("Invalid hangman command! type 'hangman' for help")
         
-acceptable_apologies = ["Colton is the bestest ever! I just love everything about him. He definitely deserves the world!"]
+acceptable_apologies = ["I would like some better odds Pasta! Please increase them."]
 
 async def f_emily(bot, message, channel, req, upper_req):
-    print("here3")
     if req.startswith("emily"):
-        print("here2")
         req = upper_req[6:]
         if (message.author.name == user_emily_name) or message.author.name == user_colton_name:
-            print("here")
-            print(req)
             if req in acceptable_apologies:
                 import AuthorSendsMessage
                 emilys_odds = AuthorSendsMessage.emilys_odds
-                await channel.send(f"Thank you!. Odds have been changed from 1 in {emilys_odds} to 1 in {emilys_odds + 50}.")
-                emilys_odds += 50
-                AuthorSendsMessage.emilys_odds = emilys_odds
+                if (emilys_odds + 50) > 200:
+                    await channel.send("I can't increase your odds anymore! Sorry Emily.")
+                else:
+                    await channel.send(f"Thank you!. Odds have been changed from 1 in {emilys_odds} to 1 in {emilys_odds + 50}.")
+                    emilys_odds += 50
+                    AuthorSendsMessage.emilys_odds = emilys_odds
             else:
                 await channel.send(f"That's not a valid request Ms. Lane. (hint: try `{acceptable_apologies[0]}`)")
         else:
             await channel.send("You're not emily, you can't change her odds for her.")
+
+async def f_where_do_you_think_your_current_wife_is(bot, message, channel, req, upper_req):
+    if req.startswith("where do you think your current wife is"):
+        await channel.send("I'm not sure, I haven't concieved her yet")
+
+async def f_emi(bot, message, channel, req, upper_req):
+    if req.startswith("emi "):
+        if not ((message.author.name == user_emi_name) or (message.author.name == user_colton_name)):
+            await channel.send("you cannot perform actions for emi!")
+            return
+        req = req[4:]
+        if req == "help":
+            await channel.send("Hi Emi!! Please type `!pasta emi i took my meds pasta!` to respond when I ask you to take your meds!")
+            return
+        elif req == "i took my meds pasta!":
+            from main import wait_time
+            await channel.send(f"Thank you for taking your meds Emi! I will bug you again in exactly {wait_time.hours} hours, {wait_time.minutes} minutes, and {wait_time.seconds} seconds!")
+            import main
+            main.emi_responded = True
+            return
+        else:
+            await channel.send("Invalid emi command Emi! type `!pasta emi help` for help")
+            return

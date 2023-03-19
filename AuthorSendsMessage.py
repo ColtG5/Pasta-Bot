@@ -26,13 +26,14 @@ async def f_isItAlex(bot, message, channel, text, author):
 async def f_isItEmily(bot, message, channel, text, author):
     global emilys_odds
     if (author == user_emily_name):
-        print("Emily odds: " + str(emilys_odds))
-        if emilys_odds > 1:
-            emilys_odds -= 1
-        if random.randint(1, emilys_odds) == 1:
-            current_nick = message.author.nick
-            # message.author.edit(nick=current_nick[:-1])
-            await message.author.edit(nick=current_nick[:-1])
+        pass
+        # print("Emily odds: " + str(emilys_odds))
+        # if emilys_odds > 1:
+        #     emilys_odds -= 1
+        # if random.randint(1, emilys_odds) == 1:
+        #     current_nick = message.author.nick
+        #     # message.author.edit(nick=current_nick[:-1])
+        #     await message.author.edit(nick=current_nick[:-1])
 
 async def f_isItBjorn(bot, message, channel, text, author):
     if (author == user_bjorn_name):
