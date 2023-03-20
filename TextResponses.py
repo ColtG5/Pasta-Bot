@@ -9,7 +9,11 @@ import yt_dlp
 import json
 import datetime
 import asyncio
+import main
 
+woohoo = 0
+emi_responded = False
+waiting_for_emi = False
 wait_time = 25
 last_message_time = {}
 greetings = ["hi", "hey", "hello"]
@@ -248,6 +252,12 @@ async def f_boobs(bot, message, channel, req, upper_req):
         else:
             await get_tenor(channel)
 
+async def f_persona(bot, message, channel, req, upper_req):
+    if (req == "persona"):
+        from links import links
+        # send a random link from the file links.py
+        await channel.send(random.choice(links.persona))
+
 async def get_tenor(channel):
     apikey = "AIzaSyCiR3gYC7B1zsiROI1hz4Lx-5ObxMk-gkQ"
     limit = 50
@@ -454,43 +464,74 @@ async def f_hangman(bot, message, channel, req, upper_req):
         
 acceptable_apologies = ["I would like some better odds Pasta! Please increase them."]
 
-async def f_emily(bot, message, channel, req, upper_req):
-    if req.startswith("emily"):
-        req = upper_req[6:]
-        if (message.author.name == user_emily_name) or message.author.name == user_colton_name:
-            if req in acceptable_apologies:
-                import AuthorSendsMessage
-                emilys_odds = AuthorSendsMessage.emilys_odds
-                if (emilys_odds + 50) > 200:
-                    await channel.send("I can't increase your odds anymore! Sorry Emily.")
-                else:
-                    await channel.send(f"Thank you!. Odds have been changed from 1 in {emilys_odds} to 1 in {emilys_odds + 50}.")
-                    emilys_odds += 50
-                    AuthorSendsMessage.emilys_odds = emilys_odds
-            else:
-                await channel.send(f"That's not a valid request Ms. Lane. (hint: try `{acceptable_apologies[0]}`)")
-        else:
-            await channel.send("You're not emily, you can't change her odds for her.")
+# async def f_emily(bot, message, channel, req, upper_req):
+#     if req.startswith("emily"):
+#         req = upper_req[6:]
+#         if (message.author.name == user_emily_name) or message.author.name == user_colton_name:
+#             if req in acceptable_apologies:
+#                 import AuthorSendsMessage
+#                 emilys_odds = AuthorSendsMessage.emilys_odds
+#                 if (emilys_odds + 50) > 200:
+#                     await channel.send("I can't increase your odds anymore! Sorry Emily.")
+#                 else:
+#                     await channel.send(f"Thank you!. Odds have been changed from 1 in {emilys_odds} to 1 in {emilys_odds + 50}.")
+#                     emilys_odds += 50
+#                     AuthorSendsMessage.emilys_odds = emilys_odds
+#             else:
+#                 await channel.send(f"That's not a valid request Ms. Lane. (hint: try `{acceptable_apologies[0]}`)")
+#         else:
+#             await channel.send("You're not emily, you can't change her odds for her.")
 
 async def f_where_do_you_think_your_current_wife_is(bot, message, channel, req, upper_req):
     if req.startswith("where do you think your current wife is"):
         await channel.send("I'm not sure, I haven't concieved her yet")
 
 async def f_emi(bot, message, channel, req, upper_req):
-    if req.startswith("emi "):
+    # print(req)
+    # print(req[3:])
+    if req[:3] == "emi":
+        global woohoo
+        global waiting_for_emi
+        global emi_responded
+        # print("here")
+        req = req[4:]
         if not ((message.author.name == user_emi_name) or (message.author.name == user_colton_name)):
             await channel.send("you cannot perform actions for emi!")
             return
-        req = req[4:]
         if req == "help":
-            await channel.send("Hi Emi!! Please type `!pasta emi i took my meds pasta!` to respond when I ask you to take your meds!")
+            await channel.send("Hi Emi !! Please type `!pasta emi i took my meds pasta!` to respond when I ask you to take your meds!\n" +
+                               "You can also see how long until I ask you to take your meds again by typing `!pasta emi wait time`")
             return
-        elif req == "i took my meds pasta!":
-            from main import wait_time
-            await channel.send(f"Thank you for taking your meds Emi! I will bug you again in exactly {wait_time.hours} hours, {wait_time.minutes} minutes, and {wait_time.seconds} seconds!")
-            import main
-            main.emi_responded = True
+        if req == "i took my meds pasta!":
+            if not waiting_for_emi:
+                await channel.send("You're too early em!! I'll bug you again at 9:30pm.")
+                return
+            await channel.send(f"Thank you for taking your meds {message.author.mention}! I will bug you again at 9:30pm tomorrow <3")
+            emi_responded = True
+            return
+        if req == "wait time":
+            if waiting_for_emi:
+                await channel.send("GO TAKE YOUR MEDS EMI")
+                return
+            time_now = datetime.datetime.combine(datetime.date.today(), datetime.datetime.now().time())
+            datetime2 = datetime.datetime.combine(datetime.date.today(), woohoo)
+            waiting_time = None
+            # print(f"{time_now} | {datetime2}")
+            if datetime2 < time_now:
+               waiting_time = (datetime2 + datetime.timedelta(days=1)) - time_now
+            else:
+                waiting_time = datetime2 - time_now
+            # print(waiting_time)
+
+            total_seconds = int(waiting_time.total_seconds())
+
+            # Compute the number of hours, minutes, and seconds in the timedelta
+            hours, remainder = divmod(total_seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+
+
+            await channel.send(f"Emi has {hours} hours, {minutes} minutes, and {seconds} seconds left until I politely yell at her")
             return
         else:
-            await channel.send("Invalid emi command Emi! type `!pasta emi help` for help")
+            await channel.send("Invalid emi command Emi ! type `!pasta emi help` for help")
             return

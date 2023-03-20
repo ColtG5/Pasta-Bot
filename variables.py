@@ -1,5 +1,6 @@
 user_bjorn_name = "bjorn"
 user_colton = "ColtG5#6745"
+user_colton_id = 480182681296961548
 user_colton_name = "ColtG5"
 user_sydney_name = "Sydney"
 user_emily_name = "liltop"
@@ -10,4 +11,5 @@ user_mason_name = "Mason"
 user_aiden_name = "Captain Taylor"
 user_gia_name = "echo"
 user_emi = ".em.h.#7936"
+user_emi_id = 695712992133644318
 user_emi_name = ".em.h."

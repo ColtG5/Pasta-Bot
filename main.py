@@ -7,6 +7,7 @@ import discord
 from discord.ext import commands
 from gtts import gTTS
 from dotenv import load_dotenv
+import TextResponses
 
 
 # get environment variables from .env file using library dotenv
@@ -18,12 +19,22 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!pasta ", intents=intents)
 bot.remove_command('help')
 
+chump_lounge = None
+
 @bot.event
 async def on_ready():
     print("Logged in as {0.user}".format(bot))
     bot.loop.create_task(send_daily_polar_bear())
     bot.loop.create_task(send_daily_emi_meds_reminder())
 
+    chump_lounge = bot.get_guild(905206514665529445) # chump lounge
+    # pUHsta = bot.get_guild(1081413943853060137) # pUHsta
+    emi = await chump_lounge.fetch_member(user_emi_id)
+    # colton = await chump_lounge.fetch_member(user_colton_id)
+    global emi_string
+    emi_string = f"{emi.mention}, it's time to take your meds emi!"
+    # global colton_string
+    # colton_string = f"{colton.mention}, it's time to take your meds emi!"
 
     for guild in bot.guilds:
         if guild.me.guild_permissions.view_audit_log:
@@ -33,7 +44,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    print(message.guild)
+    # print(message.guild)
     author = message.author
     text = message.content.lower()
     if author == bot.user:
@@ -121,50 +132,82 @@ async def send_daily_polar_bear():
         else:
             # Wait until the send time
             wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
+            if wait_time < 0:
+                wait_time += 86400
+            print(wait_time)
             await asyncio.sleep(wait_time)
+            print("errerere")
 
-waiting_for_emis_response = False;
-emi_responded = False;
-# emi_string = f"{discord.Member(guild=discord.Guild(id=905206514665529445), data=user_emi).mention}, it's time to take your meds emi!"
-emi_string = f"{discord.Member(guild=discord.Guild(data=905206514665529445), data=user_colton).mention}, it's time to take your meds emi!"
 
+waiting_for_emis_response = False
+emi_string = None
+colton_string = None
+med_counter = 0
+emi_small_wait_time = 300
 async def send_daily_emi_meds_reminder():
+    global waiting_for_emis_response
+    # global colton_string
+    global emi_string
+    global med_counter
+    global emi_small_wait_time
     await bot.wait_until_ready()
-    # channel = bot.get_channel(1086882547973230714)
-    channel = bot.get_channel(1081413945329463339)
+    channel = bot.get_channel(1086882547973230714)
+    # channel = bot.get_channel(1081413945329463339) # pUHsta
     while not bot.is_closed():
         now = datetime.datetime.now().time()
         # send_time = datetime.time(hour=21, minute=30, second=0)
         # buffer_time = datetime.time(hour=21, minute=30, second=5)
-        send_time = datetime.time(hour=3, minute=1, second=0)
-        buffer_time = datetime.time(hour=3, minute=1, second=5)
+        send_time = datetime.time(hour=21, minute=32, second=0)
+        TextResponses.woohoo = send_time
+        # emi_send_time = send_time
+        # set_emi_send_time(send_time)
+        # print(f"udapted to {emi_send_time}")
+        buffer_time = datetime.time(hour=21, minute=32, second=5)
+        # buffer_time = send_time + datetime.timedelta(seconds=5)
         # If it's the send time, send the message
-        if buffer_time >= now >= send_time:
-            if (not waiting_for_emis_response):
+        
+        if (not waiting_for_emis_response):
+            if buffer_time >= now >= send_time:
                 await channel.send(emi_string)
+                # await channel.send(colton_string)
+                print("reminded emi about her meds") 
+                med_counter += 1
                 # Wait until the next day to send the message again
                 tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
                 send_time = datetime.datetime.combine(tomorrow.date(), send_time)
+                TextResponses.woohoo = send_time
 
-                # wait_time = (send_time - datetime.datetime.now()).total_seconds()
-                wait_time = datetime.time(hour=0, minute=5, second=0)
+                # emi_wait_time = (send_time - datetime.datetime.now()).total_seconds()
                 waiting_for_emis_response = True
-                await asyncio.sleep(wait_time)
+                TextResponses.waiting_for_emi = True
+                await asyncio.sleep(emi_small_wait_time)
             else:
-                if emi_responded == True:
-                    waiting_for_emis_response = False;
-                    emi_responded = False;
-                    wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
-                    asyncio.sleep(wait_time)
-
-                else:
-                    await channel.send(emi_string.__add__("!!!"))
-                    asyncio.sleep(wait_time)
-
+                # Wait until the send time
+                # emi_send_time = send_time
+                # print(f"set emi_send_time to {emi_send_time}")
+                wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
+                if wait_time < 0:
+                    wait_time += 86400
+                await asyncio.sleep(wait_time)
         else:
-            # Wait until the send time
-            wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
-            await asyncio.sleep(wait_time)
+            if TextResponses.emi_responded == True:
+                waiting_for_emis_response = False;
+                TextResponses.emi_responded = False;
+                TextResponses.waiting_for_emi = False;
+                med_counter = 0
+                # emi_send_time = send_time
+                wait_time = (datetime.datetime.combine(datetime.date.today(), send_time) - datetime.datetime.now()).total_seconds()
+                if wait_time < 0:
+                    wait_time += 86400
+                await asyncio.sleep(wait_time)
+
+            else:
+                i_stg_emi = "!" * med_counter
+                await channel.send(emi_string + f"{i_stg_emi}")
+                med_counter += 1
+                print("reminded emi about her meds" + f" ({med_counter} times)")
+                await asyncio.sleep(emi_small_wait_time)
+
 
 @bot.event
 async def on_voice_state_update(member, before, after):

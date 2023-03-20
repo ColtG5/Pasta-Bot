@@ -58,7 +58,7 @@ class Hangman():
                 current_guess += letter
             else:
                 current_guess += "\_"
-        print(current_guess)
+        print(current_guess + f" ({self.word})")
         return current_guess
     
     def print_current_guess(self):
