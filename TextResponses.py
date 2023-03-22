@@ -242,26 +242,34 @@ async def f_boobs(bot, message, channel, req, upper_req):
             await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
 
         elif user != user_colton_name:
-            print(user)
-            print(user_colton_name)
+            # print(user)
+            # print(user_colton_name)
             x = random.randint(3,5)
             if x == 5:
-                await get_tenor(channel)
+                await get_tenor(channel, "boobs")
             else:
                 await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
         else:
             await get_tenor(channel)
 
-async def f_persona(bot, message, channel, req, upper_req):
-    if (req == "persona"):
-        from links import links
-        # send a random link from the file links.py
-        await channel.send(random.choice(links.persona))
+async def f_my_ass_ta(bot, message, channel, req, upper_req):
+    if req == "my-ass-ta":
+        user = message.author.name
 
-async def get_tenor(channel):
+        if user != user_colton_name:
+            # print(user)
+            # print(user_colton_name)
+            x = random.randint(3,5)
+            if x == 5:
+                await get_tenor(channel, "ass")
+            else:
+                await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
+        else:
+            await get_tenor(channel, "ass")
+
+async def get_tenor(channel, search_term):
     apikey = "AIzaSyCiR3gYC7B1zsiROI1hz4Lx-5ObxMk-gkQ"
     limit = 50
-    search_term = "boobs"
     r = requests.get(
         "https://tenor.googleapis.com/v2/search?q=%s&key=%s&limit=%s" % (search_term, apikey, limit))
 
@@ -275,6 +283,12 @@ async def get_tenor(channel):
         await channel.send(gif)
     else:
         print("gif aint work")
+
+async def f_persona(bot, message, channel, req, upper_req):
+    if (req == "persona"):
+        from links import links
+        # send a random link from the file links.py
+        await channel.send(random.choice(links.persona))
 
 async def f_join(bot, message, channel, req, upper_req):
     if req == "join":
@@ -535,3 +549,27 @@ async def f_emi(bot, message, channel, req, upper_req):
         else:
             await channel.send("Invalid emi command Emi ! type `!pasta emi help` for help")
             return
+
+async def f_dan_intro(bot, message, channel, req, upper_req):
+    user = message.author
+    if req.startswith("dan intro"):
+        if user.voice is None:
+            await channel.send("get in a vc first")
+            return     
+        voice_channel = message.author.voice.channel
+        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+        if (voice_client is not None) and (voice_client.channel != voice_channel):
+            print("in a diff vc")
+            await voice_client.disconnect()
+            voice_client = None
+        if voice_client is None:
+            print("in no vc")
+            voice_client = await voice_channel.connect()
+        
+        if voice_client.is_playing():
+            voice_client.stop()
+
+        voice_client.play(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="DAN/dan_mc_intro.mp3"))
+        
+        
+        

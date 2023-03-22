@@ -3,8 +3,8 @@ from variables import *
 
 emilys_odds = random.randint(20, 30)
 
-sydney_smells = ["stfu", "shut up", "rude", "fuck", "shit", "i hate you", "hoe",
-                  "stop", "kys", "kill your self", "kill yourself", "die", "dumb", "stupid"
+sydney_smells = ["stfu", "fuck", "shit", "i hate you", "hoe",
+                  "kys", "kill your self", "kill yourself", "die",
                   "ass", "bitch"]
 sydney_insults = ["Sydney kinda smells tbh", "Sydney u better stop w that shenanigans",
                    "RUDE SYDNEY!!!", "Rude! this y u a mistake ong", "Syd go wash ur mouth w that speak",

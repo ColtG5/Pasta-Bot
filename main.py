@@ -96,6 +96,7 @@ async def bot_commands(ctx):
     bot_functions[bot_functions.index("pokemon")] = "pokemon (1/673 chance for a shiny!)"
     bot_functions[bot_functions.index("sydney based")] = "sydney based (sydney exclusive!)"
     bot_functions[bot_functions.index("8ball")] = "8ball [question] ?"
+    bot_functions[bot_functions.index("my ass ta")] = "my-ass-ta"
 
     intro = "```Pasta Bot!\nUsage: !pasta <command> [arguments (for some)] | Current commands:\n"
     funcs = "\n".join(bot_functions)
@@ -157,12 +158,12 @@ async def send_daily_emi_meds_reminder():
         now = datetime.datetime.now().time()
         # send_time = datetime.time(hour=21, minute=30, second=0)
         # buffer_time = datetime.time(hour=21, minute=30, second=5)
-        send_time = datetime.time(hour=21, minute=32, second=0)
+        send_time = datetime.time(hour=21, minute=30, second=0)
         TextResponses.woohoo = send_time
         # emi_send_time = send_time
         # set_emi_send_time(send_time)
         # print(f"udapted to {emi_send_time}")
-        buffer_time = datetime.time(hour=21, minute=32, second=5)
+        buffer_time = datetime.time(hour=21, minute=30, second=5)
         # buffer_time = send_time + datetime.timedelta(seconds=5)
         # If it's the send time, send the message
         
@@ -202,12 +203,11 @@ async def send_daily_emi_meds_reminder():
                 await asyncio.sleep(wait_time)
 
             else:
-                i_stg_emi = "!" * med_counter
+                i_stg_emi = "!" * (2 ** med_counter)
                 await channel.send(emi_string + f"{i_stg_emi}")
                 med_counter += 1
                 print("reminded emi about her meds" + f" ({med_counter} times)")
                 await asyncio.sleep(emi_small_wait_time)
-
 
 @bot.event
 async def on_voice_state_update(member, before, after):
