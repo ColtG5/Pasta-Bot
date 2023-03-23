@@ -12,6 +12,7 @@ import asyncio
 import main
 
 woohoo = 0
+pasta_volume = 0.02
 emi_responded = False
 waiting_for_emi = False
 wait_time = 25
@@ -250,7 +251,7 @@ async def f_boobs(bot, message, channel, req, upper_req):
             else:
                 await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
         else:
-            await get_tenor(channel)
+            await get_tenor(channel, "boobs")
 
 async def f_my_ass_ta(bot, message, channel, req, upper_req):
     if req == "my-ass-ta":
@@ -266,6 +267,22 @@ async def f_my_ass_ta(bot, message, channel, req, upper_req):
                 await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
         else:
             await get_tenor(channel, "ass")
+
+async def f_carter(bot, message, channel, req, upper_req):
+    if req == "carter":
+        user_id = message.author.id
+        print(user_id)
+        if (user_id != user_carter_id):
+            # print(user)
+            # print(user_colton_name)
+            # x = random.randint(3,5)
+            # if x == 5:
+            #     await get_tenor(channel, "feet")
+            # else:
+            #     await channel.send("https://tenor.com/view/veggie-tales-the-battle-is-not-ours-not-our-fight-esther-gif-16996193")
+            await channel.send("https://tenor.com/view/veggie-tales-the-battle-is-not-ours-not-our-fight-esther-gif-16996193")
+        else:
+            await get_tenor(channel, "feet")
 
 async def get_tenor(channel, search_term):
     apikey = "AIzaSyCiR3gYC7B1zsiROI1hz4Lx-5ObxMk-gkQ"
@@ -307,37 +324,72 @@ async def f_join(bot, message, channel, req, upper_req):
 async def f_play(bot, message, channel, req, upper_req):
     if req.startswith("play "):
         upper_req = upper_req[5:]
-        if message.author.name == user_colton_name:
-            if upper_req.startswith("https://www.youtube.com/"):
-                user = message.author
-                if user.voice is None:
-                    await channel.send("get in a vc first")
-                    return     
-                voice_channel = message.author.voice.channel
-                voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-                if (voice_client is not None) and (voice_client.channel != voice_channel):
-                    print("in a diff vc")
-                    await voice_client.disconnect()
-                    voice_client = None
-                if voice_client is None:
-                    print("in no vc")
-                    voice_client = await voice_channel.connect()
+        # if upper_req.startswith("https://www.youtube.com/"):
+        try:
+            user = message.author
+            if user.voice is None:
+                await channel.send("get in a vc first")
+                return     
+            voice_channel = message.author.voice.channel
+            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+            if (voice_client is not None) and (voice_client.channel != voice_channel):
+                print("in a diff vc")
+                await voice_client.disconnect()
+                voice_client = None
+            if voice_client is None:
+                print("in no vc")
+                voice_client = await voice_channel.connect()
 
-                ydl_opts = {
-                    'format': 'bestaudio/best',       
-                    'outtmpl': 'youtube-audio.mp3',       
-                    'noplaylist' : True,   
-                    'nooverwrites': False,        
-                }
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([upper_req])
-                
-                source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
-                voice_client.play(source)
-            else:
-                await channel.send("bruh")
-        else:
-            await channel.send("chump")
+            ydl_opts = {
+                'format': 'bestaudio/best',       
+                'outtmpl': 'play-audio.mp3',       
+                'noplaylist' : True,   
+                'nooverwrites': False,        
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([upper_req])
+            # source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
+            # voice_client.play(source)
+
+            to_play = (discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")))
+            to_play.volume = pasta_volume
+            voice_client.play(to_play)
+
+        except:
+            await channel.send("could not play that !!! (!pasta play <link>)")
+
+async def f_download(bot, message, channel, req, upper_req):
+    if req.startswith("download "):
+        upper_req = upper_req[9:]
+        # if upper_req.startswith("https://www.youtube.com/"):
+        try:
+            user = message.author
+            if user.voice is None:
+                await channel.send("get in a vc first")
+                return     
+            voice_channel = message.author.voice.channel
+            voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+            if (voice_client is not None) and (voice_client.channel != voice_channel):
+                print("in a diff vc")
+                await voice_client.disconnect()
+                voice_client = None
+            if voice_client is None:
+                print("in no vc")
+                voice_client = await voice_channel.connect()
+
+            ydl_opts = {
+                'format': 'bestaudio/best',       
+                'outtmpl': 'download-audio.mp3',       
+                'noplaylist' : True,   
+                'nooverwrites': False,        
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([upper_req])
+            
+            await channel.send(file=discord.File("download-audio.mp3"))
+
+        except:
+            await channel.send("could not send that audio file !!!")
 
 async def f_stop(bot, message, channel, req, upper_req):
     if req == "stop":
@@ -550,26 +602,62 @@ async def f_emi(bot, message, channel, req, upper_req):
             await channel.send("Invalid emi command Emi ! type `!pasta emi help` for help")
             return
 
-async def f_dan_intro(bot, message, channel, req, upper_req):
-    user = message.author
-    if req.startswith("dan intro"):
-        if user.voice is None:
-            await channel.send("get in a vc first")
-            return     
-        voice_channel = message.author.voice.channel
-        voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
-        if (voice_client is not None) and (voice_client.channel != voice_channel):
-            print("in a diff vc")
-            await voice_client.disconnect()
-            voice_client = None
-        if voice_client is None:
-            print("in no vc")
-            voice_client = await voice_channel.connect()
-        
-        if voice_client.is_playing():
-            voice_client.stop()
+async def f_set_volume(bot, message, channel, req, upper_req):
+    volumes = {"quiet": 0.005, "semi-quiet": 0.013, "normal": 0.02, "kinda loud": 0.1, "loud": 0.3, "don't.": 1.0}
+    if req == "set volume help":
+        await channel.send("Valid volumes are: " + ", ".join(volumes.keys()) + "  ex. `!pasta set volume semi-quiet`")
+        return
+    if req.startswith("set volume "):
+        if (message.author.name != user_colton_name):
+            await channel.send("Only colton can change the volume rn, sorry (go yell at him or smthn)")
+            return
+        volumes = {"quiet": 0.005, "semi-quiet": 0.013, "normal": 0.02, "kinda loud": 0.1, "loud": 0.3, "don't.": 1.0}
+        req = req[11:]
+        vol = None
+        if req in volumes:
+            vol = volumes[req]
+        else:
+            await channel.send("Invalid volume! Valid volumes are: " + ", ".join(volumes.keys()))
+        try:
+            global pasta_volume
+            pasta_volume = vol
+            await channel.send(f"Volume set to {req}")
+            print("volume = " + str(pasta_volume))
+            return
+        except:
+            await channel.send("That volume didn't work for some reason")
+    if req.startswith("set volume"):
+        await channel.send("Valid volumes are: " + ", ".join(volumes.keys()) + "  ex. `!pasta set volume semi-quiet`")
 
-        voice_client.play(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="DAN/dan_mc_intro.mp3"))
-        
-        
+async def play_a_source_file(bot, message, channel, req, source):
+    user = message.author
+    if user.voice is None:
+        await channel.send("get in a vc first")
+        return     
+    voice_channel = message.author.voice.channel
+    voice_client = discord.utils.get(bot.voice_clients, guild=message.guild)
+    if (voice_client is not None) and (voice_client.channel != voice_channel):
+        print("in a diff vc")
+        await voice_client.disconnect()
+        voice_client = None
+    if voice_client is None:
+        print("in no vc")
+        voice_client = await voice_channel.connect()
+    
+    if voice_client.is_playing():
+        voice_client.stop()
+
+    to_play = (discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source=source)))
+    global pasta_volume
+    to_play.volume = pasta_volume
+    voice_client.play(to_play)
+
+async def f_dan_intro(bot, message, channel, req, upper_req):
+    print(req)
+    if req == ("dan intro"):
+        await play_a_source_file(bot, message, channel, req, "musics/dan_mc_intro.mp3")
+
+async def f_president_time(bot, message, channel, req, upper_req):
+    if req == ("president time"):
+        await play_a_source_file(bot, message, channel, req, "musics/president_time.mp3")
         
