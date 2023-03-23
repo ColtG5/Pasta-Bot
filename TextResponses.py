@@ -340,6 +340,9 @@ async def f_play(bot, message, channel, req, upper_req):
                 print("in no vc")
                 voice_client = await voice_channel.connect()
 
+            if voice_client.is_playing():
+                voice_client.stop()
+
             ydl_opts = {
                 'format': 'bestaudio/best',       
                 'outtmpl': 'play-audio.mp3',       
@@ -351,12 +354,13 @@ async def f_play(bot, message, channel, req, upper_req):
             # source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
             # voice_client.play(source)
 
-            to_play = (discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")))
+            to_play = (discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="play-audio.mp3", options="-b:a 64k")))
             to_play.volume = pasta_volume
             voice_client.play(to_play)
 
-        except:
+        except Exception as e:
             await channel.send("could not play that !!! (!pasta play <link>)")
+            print(e)
 
 async def f_download(bot, message, channel, req, upper_req):
     if req.startswith("download "):
@@ -661,3 +665,6 @@ async def f_president_time(bot, message, channel, req, upper_req):
     if req == ("president time"):
         await play_a_source_file(bot, message, channel, req, "musics/president_time.mp3")
         
+async def f_bretts_goofy_silly_side(bot, message, channel, req, upper_req):
+    if req == ("bretts goofy silly side"):
+        await play_a_source_file(bot, message, channel, req, "musics/brett_goofy_silly_side.mp3")
