@@ -354,7 +354,8 @@ async def f_play(bot, message, channel, req, upper_req):
             # source = discord.FFmpegOpusAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="youtube-audio.mp3", options="-b:a 64k")
             # voice_client.play(source)
 
-            to_play = (discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="play-audio.mp3", options="-b:a 64k")))
+            to_play = (discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(executable="C:\\Program Files\\ffmpeg\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe", source="play-audio.mp3")))
+            global pasta_volume
             to_play.volume = pasta_volume
             voice_client.play(to_play)
 
@@ -612,9 +613,9 @@ async def f_set_volume(bot, message, channel, req, upper_req):
         await channel.send("Valid volumes are: " + ", ".join(volumes.keys()) + "  ex. `!pasta set volume semi-quiet`")
         return
     if req.startswith("set volume "):
-        if (message.author.name != user_colton_name):
-            await channel.send("Only colton can change the volume rn, sorry (go yell at him or smthn)")
-            return
+    #     if (message.author.name != user_colton_name):
+    #         await channel.send("Only colton can change the volume rn, sorry (go yell at him or smthn)")
+    #         return
         volumes = {"quiet": 0.005, "semi-quiet": 0.013, "normal": 0.02, "kinda loud": 0.1, "loud": 0.3, "don't.": 1.0}
         req = req[11:]
         vol = None

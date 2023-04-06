@@ -203,7 +203,10 @@ async def send_daily_emi_meds_reminder():
                 await asyncio.sleep(wait_time)
 
             else:
+                # i_stg_emi = "!" * (med_counter * 3)
                 i_stg_emi = "!" * (2 ** med_counter)
+                if (len(i_stg_emi) > 1900):
+                    i_stg_emi = "!" * 1900
                 await channel.send(emi_string + f"{i_stg_emi}")
                 med_counter += 1
                 print("reminded emi about her meds" + f" ({med_counter} times)")

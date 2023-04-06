@@ -35,30 +35,30 @@ async def f_isItEmily(bot, message, channel, text, author):
         #     # message.author.edit(nick=current_nick[:-1])
         #     await message.author.edit(nick=current_nick[:-1])
 
-async def f_isItBjorn(bot, message, channel, text, author):
-    if (author == user_bjorn_name):
-        if random.randint(1, 200) == 1:
-            current_nick = message.author.nick
-            # message.author.edit(nick=current_nick[:-1])
-            await message.author.edit(nick=current_nick[:-1])
+# async def f_isItBjorn(bot, message, channel, text, author):
+#     if (author == user_bjorn_name):
+#         if random.randint(1, 200) == 1:
+#             current_nick = message.author.nick
+#             # message.author.edit(nick=current_nick[:-1])
+#             await message.author.edit(nick=current_nick[:-1])
 
-async def f_isItAiden(bot, message, channel, text, author):
-    if (author == user_aiden_name):
-        if random.randint(1, 200) == 1:
-            current_nick = message.author.nick
-            # message.author.edit(nick=current_nick[:-1])
-            await message.author.edit(nick=current_nick[:-1])
+# async def f_isItAiden(bot, message, channel, text, author):
+#     if (author == user_aiden_name):
+#         if random.randint(1, 200) == 1:
+#             current_nick = message.author.nick
+#             # message.author.edit(nick=current_nick[:-1])
+#             await message.author.edit(nick=current_nick[:-1])
 
-async def f_isItMason(bot, message, channel, text, author):
-    if (author == user_mason_name):
-        if random.randint(1, 200) == 1:
-            current_nick = message.author.nick
-            # message.author.edit(nick=current_nick[:-1])
-            await message.author.edit(nick=current_nick[:-1])
+# async def f_isItMason(bot, message, channel, text, author):
+#     if (author == user_mason_name):
+#         if random.randint(1, 200) == 1:
+#             current_nick = message.author.nick
+#             # message.author.edit(nick=current_nick[:-1])
+#             await message.author.edit(nick=current_nick[:-1])
 
-async def f_isItGia(bot, message, channel, text, author):
-    if (author == user_gia_name):
-        if random.randint(1, 200) == 1:
-            current_nick = message.author.nick
-            # message.author.edit(nick=current_nick[:-1])
-            await message.author.edit(nick=current_nick[:-1])
+# async def f_isItGia(bot, message, channel, text, author):
+#     if (author == user_gia_name):
+#         if random.randint(1, 200) == 1:
+#             current_nick = message.author.nick
+#             # message.author.edit(nick=current_nick[:-1])
+#             await message.author.edit(nick=current_nick[:-1])
