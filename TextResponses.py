@@ -199,16 +199,23 @@ async def f_milf(bot, message, channel, req, upper_req):
 
 async def f_dilf(bot, message, channel, req, upper_req):
     if req == "dilf":
-        folder_path = "dilfs"
-        files = os.listdir(folder_path)
-        image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif"))]
+        if (random.randint(1,100) == 5):
+            dd_file_path = ".\dilfs\secret-danny-photo\IMG_3664.jpg"
+            with open(dd_file_path, 'rb') as f:
+                image = discord.File(f)
+                await channel.send(message.author.mention + " You got the RARE Danny DeVito photo :eyes::eyes::eyes:")
+                await channel.send(file=image)
+        else:
+            folder_path = "dilfs"
+            files = os.listdir(folder_path)
+            image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif"))]
 
-        random_file = random.choice(image_files)
-        random_file_path = os.path.join(folder_path, random_file)
+            random_file = random.choice(image_files)
+            random_file_path = os.path.join(folder_path, random_file)
 
-        with open(random_file_path, 'rb') as f:
-            image = discord.File(f)
-            await channel.send(file=image)
+            with open(random_file_path, 'rb') as f:
+                image = discord.File(f)
+                await channel.send(file=image)
 
 async def f_tishie(bot, message, channel, req, upper_req):
     if req in tishie:
