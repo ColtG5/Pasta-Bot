@@ -208,7 +208,7 @@ async def f_dilf(bot, message, channel, req, upper_req):
         else:
             folder_path = "dilfs"
             files = os.listdir(folder_path)
-            image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif"))]
+            image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif", "jpg_large"))]
 
             random_file = random.choice(image_files)
             random_file_path = os.path.join(folder_path, random_file)
