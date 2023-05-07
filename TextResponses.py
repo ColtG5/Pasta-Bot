@@ -145,8 +145,16 @@ async def f_polar_bear(bot, message, channel, req, upper_req):
 
 async def f_mouse(bot, message, channel, req, upper_req):
     if req == "mouse" or req == "mice":
-        from animal_links import animals
-        await channel.send(random.choice(animals.mouse_links_list))
+        folder_path = "animal_links/mouse_pics"
+        files = os.listdir(folder_path)
+        image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif", "jpg_large"))]
+
+        random_file = random.choice(image_files)
+        random_file_path = os.path.join(folder_path, random_file)
+
+        with open(random_file_path, 'rb') as f:
+            image = discord.File(f)
+            await channel.send(file=image)
 
 async def f_red_panda(bot, message, channel, req, upper_req):
     if req == "red panda":
