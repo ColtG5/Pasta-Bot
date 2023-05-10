@@ -92,11 +92,11 @@ async def f_tts(bot, message, channel, req, upper_req):
         # print(user.name)
         # print(user_emily_name)
         if user.voice is not None:
-            if user.name == user_emily_name:
+            if user.id == user_emily_id:
                 # Check if the author has sent a message before
                 print(last_message_time)
-                if user.name in last_message_time:
-                    last_time = last_message_time[user.name]
+                if user.id in last_message_time:
+                    last_time = last_message_time[user.id]
                     current_time = datetime.datetime.now()
                     time_elapsed = (current_time - last_time).total_seconds()
                     print(f"Time elapsed since last message: {time_elapsed} seconds")
@@ -108,7 +108,7 @@ async def f_tts(bot, message, channel, req, upper_req):
                 else:
                     await tts(bot, message, tts_text)
                 # Store the time of the current message for the next comparison
-                last_message_time[user.name] = datetime.datetime.now()
+                last_message_time[user.id] = datetime.datetime.now()
             else:
                 await tts(bot, message, tts_text)
         else:
@@ -207,7 +207,7 @@ async def f_milf(bot, message, channel, req, upper_req):
 
 async def f_dilf(bot, message, channel, req, upper_req):
     if req == "dilf":
-        if (random.randint(1,100) == 5):
+        if (random.randint(1,50) == 5):
             dd_file_path = ".\dilfs\secret-danny-photo\IMG_3664.jpg"
             with open(dd_file_path, 'rb') as f:
                 image = discord.File(f)
@@ -253,13 +253,13 @@ async def f_cheat_code(bot, message, channel, req, upper_req):
 
 async def f_boobs(bot, message, channel, req, upper_req):
     if req == "boobs":
-        user = message.author.name
-        if user == user_emily_name:
+        user = message.author.id
+        if user == user_emily_id:
             await channel.send("https://media.tenor.com/_ZvbLvrT_QcAAAAC/horny-jail-bonk.gif")
 
-        elif user != user_colton_name:
+        elif user != user_colton_id:
             # print(user)
-            # print(user_colton_name)
+            # print(user_colton_id)
             x = random.randint(3,5)
             if x == 5:
                 await get_tenor(channel, "boobs")
@@ -270,9 +270,9 @@ async def f_boobs(bot, message, channel, req, upper_req):
 
 async def f_my_ass_ta(bot, message, channel, req, upper_req):
     if req == "my-ass-ta":
-        user = message.author.name
+        user = message.author.id
 
-        if user != user_colton_name:
+        if user != user_colton_id:
             # print(user)
             # print(user_colton_name)
             x = random.randint(3,5)
@@ -445,7 +445,7 @@ async def f_pun(bot, message, channel, req, upper_req):
         await channel.send(pun["joke"])
 
 shiny_messages = ["damn, you got a shiny!", "SHINYYYYYYYYYYYY", "That's a shiny, well done!"]
-shiny_messages_parker = ["Parker the absolute goat with yet another shiny somehow", "Now this is a Parker moment", "Nice shiny Parker!"]
+shiny_messages_parker = ["Parker the absolute goat with yet another shiny somehow", "Now this is a Parker certified hood classic", "Nice shiny Parker!"]
 shiny_odds = 673
 
 async def f_pokemon(bot, message, channel, req, upper_req):
@@ -457,7 +457,7 @@ async def f_pokemon(bot, message, channel, req, upper_req):
         poke = pokemon.get("results")[0].get("url")
         shiny_chance = random.randint(1, shiny_odds)
         if req[8:] == "shiny":
-            if user_colton_name != message.author.name:
+            if user_colton_id != message.author.id:
                 await channel.send("you're not him :rofl:")
                 return
             else:
@@ -468,7 +468,7 @@ async def f_pokemon(bot, message, channel, req, upper_req):
 
         if shiny_chance == 5:
             pic = requests.get(poke).json().get("sprites").get("other").get("official-artwork").get("front_shiny")
-            if message.author.name == user_parker_name:
+            if message.author.id == user_parker_id:
                 await channel.send(pic)
                 await channel.send(f"hey Mr. P-Man! {message.author.mention}, you got another shiny! (are you tryna make ur whole pokedex shiny???)")
             else:
@@ -480,7 +480,7 @@ async def f_pokemon(bot, message, channel, req, upper_req):
 
 async def f_sydney_based(bot, message, channel, req, upper_req):
     if req == "sydney based":
-        if message.author.name == user_sydney_name:
+        if message.author.id == user_sydney_id:
             folder_path = "pics"
             files = os.listdir(folder_path)
             image_files = [f for f in files if f.endswith((".png", ".jpg", ".jpeg", ".gif"))]
@@ -512,6 +512,7 @@ hangman_games = {}
 
 async def f_hangman(bot, message, channel, req, upper_req):
     author = message.author
+    print(author)
     if req == "hangman":
         await channel.send("Pasta hangman!\nHangman commands: \nstart \nend \n<letter>")
         return
@@ -581,7 +582,7 @@ async def f_emi(bot, message, channel, req, upper_req):
         global emi_responded
         # print("here")
         req = req[4:]
-        if not ((message.author.name == user_emi_name) or (message.author.name == user_colton_name)):
+        if not ((message.author.id == user_emi_id) or (message.author.id == user_colton_id)):
             await channel.send("you cannot perform actions for emi!")
             return
         if req == "help":
